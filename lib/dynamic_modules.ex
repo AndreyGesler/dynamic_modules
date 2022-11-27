@@ -100,12 +100,6 @@ defmodule DynamicModules do
 
   ##############################################################################
   @doc """
-  ping.
-
-  ## Examples
-
-      iex> DynamicModules.ping()
-      :pong
 
   """
   def load_module(module)
@@ -138,53 +132,45 @@ defmodule DynamicModules do
           state_id: "active"
         } = _module
       ) do
-    {:ok, result} =
-      catch_error!(
-        (
-          already_loaded = :code.is_loaded(id)
+    already_loaded = :code.is_loaded(id)
 
-          {action, current_version} =
-            if already_loaded do
-              {:ok, current_version} = apply(id, :version, [])
+    {action, current_version} =
+      if already_loaded do
+        {:ok, current_version} = apply(id, :version, [])
 
-              if current_version != version do
-                {:recreated, current_version}
-              else
-                {:not_created, current_version}
-              end
+        if current_version != version do
+          {:recreated, current_version}
+        else
+          {:not_created, current_version}
+        end
+      else
+        {:created, nil}
+      end
+
+    result =
+      case action do
+        val when val in [:created, :recreated] ->
+          Utils.create_module!(id, body, __ENV__)
+
+          after_create_result =
+            if is_nil(after_create_proc) do
+              :no_after_create
             else
-              {:created, nil}
+              after_create_proc_opts =
+                if is_nil(after_create_proc_opts) do
+                  []
+                else
+                  [after_create_proc_opts]
+                end
+
+              apply(id, after_create_proc, after_create_proc_opts)
             end
 
-          result =
-            case action do
-              val when val in [:created, :recreated] ->
-                Utils.create_module!(id, body, __ENV__)
+          {action, %{id: id, previous_version: current_version, current_version: version, after_create_result: after_create_result}}
 
-                after_create_result =
-                  if is_nil(after_create_proc) do
-                    :no_after_create
-                  else
-                    after_create_proc_opts =
-                      if is_nil(after_create_proc_opts) do
-                        []
-                      else
-                        [after_create_proc_opts]
-                      end
-
-                    apply(id, after_create_proc, after_create_proc_opts)
-                  end
-
-              {action, %{id: id, previous_version: current_version, current_version: version, after_create_result: after_create_result}}
-
-              :not_created ->
-                {:not_created, %{id: id, previous_version: nil, current_version: current_version, after_create_result: nil}}
-            end
-
-          {:ok, result}
-        ),
-        true
-      )
+        :not_created ->
+          {:not_created, %{id: id, previous_version: nil, current_version: current_version, after_create_result: nil}}
+      end
 
     {:ok, result}
   end
