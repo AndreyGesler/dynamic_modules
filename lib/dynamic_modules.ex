@@ -39,7 +39,7 @@ defmodule DynamicModules do
 
         Logger.info("[#{inspect(__MODULE__)}][#{inspect(__ENV__.function)}] I will try set cookie")
         {:ok, cookie} = get_app_env!(:cookie)
-        throw_if_empty!(cookie, :atom, "Wrong cookie value")
+        raise_if_empty!(cookie, :atom, "Wrong cookie value")
         Node.set_cookie(Node.self(), cookie)
 
         Logger.info("[#{inspect(__MODULE__)}][#{inspect(__ENV__.function)}] I will try to enable notification monitor on node connection events")
@@ -47,15 +47,15 @@ defmodule DynamicModules do
         result = :net_kernel.monitor_nodes(true)
 
         if :ok != result do
-          throw_error!(:CODE_CAN_NOT_ENABLE_MONITOR_ERROR, ["Can not enable notification monitor on node connection events"], reason: result)
+          UniError.raise_error!(:CODE_CAN_NOT_ENABLE_MONITOR_ERROR, ["Can not enable notification monitor on node connection events"], reason: result)
         end
 
         # {:ok, throw_if_connect_to_node_fail} = Utils.get_app_env!(:throw_if_connect_to_node_fail)
-        # throw_if_empty!(throw_if_connect_to_node_fail, :boolean)
+        # raise_if_empty!(throw_if_connect_to_node_fail, :boolean)
 
         # Logger.info("[#{inspect(__MODULE__)}][#{inspect(__ENV__.function)}] I will try to connect ot email sender nodes")
         # {:ok, email_sender_nodes} = Utils.get_app_env!(:email_sender_nodes)
-        # throw_if_empty!(email_sender_nodes, :list)
+        # raise_if_empty!(email_sender_nodes, :list)
 
         # {:ok, email_sender_nodes} = Utils.list_of_strings_to_list_of!(email_sender_nodes)
         # Utils.connect_to_nodes!(email_sender_nodes, throw_if_connect_to_node_fail)
@@ -104,7 +104,7 @@ defmodule DynamicModules do
   """
   def load_module(module)
       when not is_map(module),
-      do: throw_error!(:CODE_WRONG_FUNCTION_ARGUMENT_ERROR, ["module cannot be nil; module must be a map"])
+      do: UniError.raise_error!(:CODE_WRONG_FUNCTION_ARGUMENT_ERROR, ["module cannot be nil; module must be a map"])
 
   def load_module(
         %{
@@ -119,7 +119,7 @@ defmodule DynamicModules do
       )
       when not is_atom(id) or not is_bitstring(version) or (not is_nil(after_create_proc) and not is_atom(after_create_proc)) or
              (not is_nil(after_create_proc_opts) and not is_list(after_create_proc_opts)) or not is_bitstring(body),
-      do: throw_error!(:CODE_WRONG_FUNCTION_ARGUMENT_ERROR, ["id, version, body cannot be nil; id must be an atom; version, body must be a string; after_create_proc if not nil must be an atom; after_create_proc_opts if not nil must be a list"])
+      do: UniError.raise_error!(:CODE_WRONG_FUNCTION_ARGUMENT_ERROR, ["id, version, body cannot be nil; id must be an atom; version, body must be a string; after_create_proc if not nil must be an atom; after_create_proc_opts if not nil must be a list"])
 
   def load_module(
         %{
@@ -177,7 +177,7 @@ defmodule DynamicModules do
 
   def load_module(module),
     do:
-      throw_error!(
+      UniError.raise_error!(
         :CODE_WRONG_ARGUMENT_COMBINATION_ERROR,
         ["Wrong argument combination"],
         module: module
