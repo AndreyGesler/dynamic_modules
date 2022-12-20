@@ -33,7 +33,7 @@ defmodule DynamicModules do
   """
   @impl true
   def init(state) do
-    catch_error!(
+    UniError.rescue_error!(
       (
         Utils.ensure_all_started!([:inets, :ssl])
 
@@ -72,7 +72,7 @@ defmodule DynamicModules do
   """
   @impl true
   def handle_info({:nodeup, node}, state) do
-    catch_error!(
+    UniError.rescue_error!(
       (
         Logger.info("[#{inspect(__MODULE__)}][#{inspect(__ENV__.function)}] Node #{inspect(node)} connected")
 
