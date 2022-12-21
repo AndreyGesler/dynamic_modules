@@ -21,7 +21,7 @@ defmodule DynamicModules do
 
   ##############################################################################
   @doc """
-
+  # Function
   """
   def start_link(opts \\ []) do
     GenServer.start_link(__MODULE__, %{}, opts)
@@ -29,7 +29,7 @@ defmodule DynamicModules do
 
   ##############################################################################
   @doc """
-
+  # Function
   """
   @impl true
   def init(state) do
@@ -68,7 +68,7 @@ defmodule DynamicModules do
 
   ##############################################################################
   @doc """
-
+  # Function
   """
   @impl true
   def handle_info({:nodeup, node}, state) do
@@ -100,7 +100,7 @@ defmodule DynamicModules do
 
   ##############################################################################
   @doc """
-
+  # Function
   """
   def load_module(module)
       when not is_map(module),
@@ -199,7 +199,7 @@ defmodule DynamicModules do
 
   ##############################################################################
   @doc """
-
+  # Function
   """
   def info!() do
     {:ok, dynamic_modules_config} = Utils.get_app_all_env!(:dynamic_modules)
