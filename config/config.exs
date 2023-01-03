@@ -1,12 +1,12 @@
 import Config
 
 config :logger,
-       handle_otp_reports: true,
-       backends: [
-         :console,
-         {LoggerFileBackend, :info_log},
-         {LoggerFileBackend, :error_log}
-       ]
+  handle_otp_reports: true,
+  backends: [
+    :console,
+    {LoggerFileBackend, :info_log},
+    {LoggerFileBackend, :error_log}
+  ]
 
 config :logger,
        :console,

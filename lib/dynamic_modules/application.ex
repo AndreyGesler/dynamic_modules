@@ -27,9 +27,8 @@ defmodule DynamicModules.Application do
   # get_children!
   """
   defp get_children! do
-
     result = [
-      {DynamicModulesWorker, []},
+      {DynamicModulesWorker, []}
     ]
 
     {:ok, result}
