@@ -125,11 +125,11 @@ defmodule DynamicModules.Services.DynamicModulesService do
   @doc """
   ## Function
   """
-  def load_module(module)
+  def load_module!(module)
       when not is_map(module),
       do: UniError.raise_error!(:CODE_WRONG_FUNCTION_ARGUMENT_ERROR, ["module cannot be nil; module must be a map"])
 
-  def load_module(
+  def load_module!(
         %{
           id: _id,
           name: name,
@@ -146,7 +146,7 @@ defmodule DynamicModules.Services.DynamicModulesService do
       do:
         UniError.raise_error!(:CODE_WRONG_FUNCTION_ARGUMENT_ERROR, ["name, version, body cannot be nil; name must be an atom; version, body must be a string; after_create_proc if not nil must be an atom; after_create_proc_opts if not nil must be a list"])
 
-  def load_module(
+  def load_module!(
         %{
           id: id,
           name: name,
@@ -208,7 +208,7 @@ defmodule DynamicModules.Services.DynamicModulesService do
     {:ok, {action, result}}
   end
 
-  def load_module(module),
+  def load_module!(module),
     do:
       UniError.raise_error!(
         :CODE_WRONG_ARGUMENT_COMBINATION_ERROR,
@@ -220,7 +220,7 @@ defmodule DynamicModules.Services.DynamicModulesService do
   @doc """
   ## Function
   """
-  def load_modules() do
+  def load_modules!() do
     {:ok, db_repo} = get_app_env!(:db_repo)
     {:ok, table_name} = get_app_env!(:table_name)
 
@@ -234,7 +234,7 @@ defmodule DynamicModules.Services.DynamicModulesService do
         modules,
         [],
         fn module, accum ->
-          {:ok, result} = load_module(module)
+          {:ok, result} = load_module!(module)
 
           {action, result} = result
           %{module: module} = result

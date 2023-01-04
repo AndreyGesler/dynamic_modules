@@ -74,7 +74,7 @@ defmodule DynamicModules do
           Logger.warn("[#{inspect(__MODULE__)}][#{inspect(__ENV__.function)}] No postgresiar nodes in cluster, cannot start dynamic modules")
         else
           Logger.info("[#{inspect(__MODULE__)}][#{inspect(__ENV__.function)}] Got postgresiar nodes in cluster, i will try start dynamic modules")
-          {:ok, _result} = DynamicModulesService.load_modules()
+          {:ok, _result} = DynamicModulesService.load_modules!()
         end
       )
     )
