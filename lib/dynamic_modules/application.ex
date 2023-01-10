@@ -5,7 +5,6 @@ defmodule DynamicModules.Application do
   ## Module
   """
   use Application
-  use Utils
 
   alias DynamicModules, as: DynamicModulesWorker
 
